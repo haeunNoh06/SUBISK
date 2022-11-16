@@ -21,26 +21,12 @@ public class KioskStartFrame extends JFrame {
 		setVisible(true);						//프레임 활성화
 		setLayout(new BorderLayout());
 		
-//		JPanel btnPanel = new JPanel();
-//		JPanel imgPanel = new JPanel();
-		
 		//panel1에 BorderLayout 삽입
-//		JPanel imgPanel = new JPanel(new BorderLayout());
 		JButton orderBtn = new JButton("주문하기");
-//		button1.setBounds(250,720,10,10);
 		orderBtn.setPreferredSize(new Dimension(40,80));
-		
-		//SUBWAY 키오스크 만들기
 		
 		add(new MainImagePanel());
 		add(orderBtn, BorderLayout.SOUTH);
-		
-		//주문하기 버튼
-//		panel1.setLayout(new BorderLayout());					
-//		add(imgPanel);
-//		add(btnPanel);
-//		add(orderBtn, BorderLayout.SOUTH);			//panel1에 BorderLayout.SOUTH 위치에 button1 삽입
-//		this.add(button1);
 		
 		//주문하기 버튼의 이벤트 지정하기
 		//화면 띄우기 버튼을 눌렀을 때
@@ -52,7 +38,6 @@ public class KioskStartFrame extends JFrame {
 				new MenuFrame();
 				//시작 화면을 안 보이게 만든다
 				KioskStartFrame.this.setVisible(false);
-				
 			}
 		});
 	}
@@ -61,10 +46,8 @@ public class KioskStartFrame extends JFrame {
 
 		var startFrame = new KioskStartFrame();
 		startFrame.setVisible(true);
-
 	}
-	
-}
+ }
 
 class WinCloser extends WindowAdapter {
 	public void windowClosing (WindowEvent e) {
