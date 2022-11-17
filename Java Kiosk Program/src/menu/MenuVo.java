@@ -2,12 +2,12 @@ package menu;
 
 public class MenuVo {
 
-	private String menuId;
+	private int menuId;
 	private String menuName;
 	private int price;
 	private String imageFileName;
 	
-	public MenuVo(String menuId, String menuName, int price, String imageFileName) {
+	public MenuVo(int menuId, String menuName, int price, String imageFileName) {
 		this.menuId = menuId;
 		this.menuName = menuName;
 		this.price = price;
@@ -28,11 +28,11 @@ public class MenuVo {
 		this.imageFileName = imageFileName;
 	}
 
-	public String getMenuId() {
+	public int getMenuId() {
 		return menuId;
 	}
 
-	public void setMenuId(String menuId) {
+	public void setMenuId(int menuId) {
 		this.menuId = menuId;
 	}
 
