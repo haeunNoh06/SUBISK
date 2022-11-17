@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Frame.OptionPopUp;
+
 public class MenuDetailPanel extends JPanel {
 	ImageIcon menuImage;									//메뉴 이미지
 	JLabel imageLabel;										//메뉴 이미지 넣는 라벨
@@ -23,7 +25,7 @@ public class MenuDetailPanel extends JPanel {
 	JButton plusButton = new JButton("+");							//+ 버튼
 	JButton minusButton = new JButton("-");							//- 버튼
 	JTextField count = new JTextField("0");							//주문 수량
-	JButton assign = new JButton("확인");								//주문 확인 버튼
+	JButton optionSelect = new JButton("옵션 선택");								//주문 확인 버튼
 	JPanel plusMinusPanel = new JPanel();							//+버튼과 -버튼 주문 수량이 들어있는 패널
 	MenuVo menuVo;													//메뉴 정보가 들어있는 menuVo
 	
@@ -35,6 +37,15 @@ public class MenuDetailPanel extends JPanel {
 		this.menuVo = menuVo;
 	}
 
+	public void opptionSetUp() {
+		optionSelect.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new OptionPopUp().setVisible(true);
+			}
+		});
+	}
+	
 	public MenuDetailPanel(MenuVo menuVo) {
 		String sPrice;	//costlabel에 "원" 집어넣는 변수
 		
@@ -90,7 +101,7 @@ public class MenuDetailPanel extends JPanel {
 		});
 		
 		//개별 메뉴의 개수를 확정했을 때
-		assign.addActionListener(new ActionListener() {
+		optionSelect.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -99,7 +110,8 @@ public class MenuDetailPanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "주문 개수가 0개입니다.", "오류메시지", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				processMenuDetail(menuVo, count.getText());
+				new OptionPopUp().setVisible(true);
+//				processMenuDetail(menuVo, count.getText());
 				
 			}
 		});
@@ -131,7 +143,7 @@ public class MenuDetailPanel extends JPanel {
 		p.add(menuNameLabel);
 		p.add(costLabel);
 		p.add(plusMinusPanel);
-		p.add(assign);
+		p.add(optionSelect);
 		
 		//costLabel
 		//포맷터를 이용해서 숫자에 자리 표시 콤마를 넣게 한다
@@ -144,24 +156,9 @@ public class MenuDetailPanel extends JPanel {
 		
 	}
 
-
-	protected void processMenuDetail(MenuVo menuVo, String text) {
-		JOptionPane.showMessageDialog(null, menuVo.getMenuName() + ", " + text + "개 주문함");
-		
-	}
-
 	public static void main(String[] args) {
 //		MenuVo menu = new MenuVo("menu01", "에그마요", 2000, "img/Egg-Mayo3.png");
 		MenuVo[] classicMenu = new MenuVo[5];
-		
-		//메뉴 넣기
-//		classicMenu[0] = new MenuVo("menu01", "에그마요", 2000, "img/Egg-Mayo3.png");
-//		classicMenu[1] = new MenuVo("menu02", "이탈리안비엠티", 2000, "img/Italian_B.M.T.png");
-//		classicMenu[2] = new MenuVo("menu03", "비엘티", 2000, "img/B.L.T.png");
-//		classicMenu[3] = new MenuVo("menu04", "햄", 2000, "img/Ham.png");
-//		classicMenu[4] = new MenuVo("menu05", "참치", 2000, "img/Tuna.png");
-		
-//		new MenuDetailPanel(menu);
 		
 		Frame f = new Frame();
 		for (int i = 0; i < 5; i++) {
