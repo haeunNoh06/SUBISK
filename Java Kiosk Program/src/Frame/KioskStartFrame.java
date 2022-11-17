@@ -43,9 +43,7 @@ public class KioskStartFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
-		var startFrame = new KioskStartFrame();
-		startFrame.setVisible(true);
+		new KioskStartFrame();
 	}
  }
 
