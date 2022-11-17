@@ -2,6 +2,7 @@ package Frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.text.PlainDocument;
 
 public class OrderFrame extends JFrame {
 
@@ -28,24 +30,28 @@ public class OrderFrame extends JFrame {
 		setResizable(false);
 		setVisible(true);								//프레임 활성화
 		setLayout(new BorderLayout()); 					//BorderLayout을 OrderFrame에 세팅
-//		setLayout(null); 					//BorderLayout을 OrderFrame에 세팅
 		
 		//라벨 선언
 		JLabel sumLabel = new JLabel("총 결제 금액"); 		//총 결제 금액 라벨
 		JLabel wonLabel = new JLabel("원");				//xxxx원 라벨
+
+		//라벨 폰트 크기 설정
+		Font font1 = new Font("나눔고딕", Font.BOLD, 20);
+		Font font2 = new Font("나눔고딕", Font.BOLD, 15);
+		sumLabel.setFont(font1);
+		wonLabel.setFont(font2);
 		
 		//텍스트 필드 선언
 		JTextField sumTxt = new JTextField(5);			//총 결제 금액을 나타낼 textField
 		sumTxt.setEditable(false); 						//사용자가 임의로 텍스트를 입력할 수 없음
 		
 		//버튼 선언
-		JButton toppingBtn = new JButton("토핑 추가");
+//		JButton toppingBtn = new JButton("토핑 추가");
 		JButton orderFinBtn = new JButton("주문 완료");	//최종 메뉴 선택 끝 버튼
 		JButton preBtn = new JButton("이전으로");
 		
 		//패널 선언
 		JPanel orderListPanel = new JPanel();			//상품명, 수량, 가격을 나타낼 패널
-//		orderListPanel.setBorder(BorderFactory.createEmptyBorder(10 , 10 , 10 , 10));
 		JPanel orderSumPanel = new JPanel();			//총 결제 금액을 나타낼 패널
 		JPanel btnPanel = new JPanel();					//이전으로 버튼과 주문 완료 버튼 추가할 패널
 		JPanel orderEndPanel = new JPanel(new GridLayout(2,1));			//주문의 마지막부분(총 결제 금액,주문완료 버튼)을 담당할 부분을 나타낼 패널
@@ -86,7 +92,7 @@ public class OrderFrame extends JFrame {
 		
 		//!!!!!!!!!!!!!!!!!!예시로 주문 넣어보기!!!!!!!!!!!!!!!!!!!
 		//header : 분류, contents : 상품 정보
-		String[] header = {"상품명", "수량", "가격", "추가사항"};
+		String[] header = {"상품명", "수량", "가격", "메뉴 정보"};
 		String[][] contents = {
 			{"에그마요", "1", "5900", "할라피뇨 없음"},
 			{"비엘티", "2", "6900", "치즈 추가"}
@@ -124,7 +130,7 @@ public class OrderFrame extends JFrame {
 //		add(orderListPanel);								//상품명,수량,가격을 나타낼 패널을 프레임에 추가
 //		add(orderEndPanel);		//orderEndPanel을 BorderLayout의 남쪽에 추가
 		add(orderListPanel, new BorderLayout().CENTER);		//상품명,수량,가격을 나타낼 패널을 프레임에 추가
-		orderListPanel.add(toppingBtn);
+//		orderListPanel.add(toppingBtn);
 		add(orderEndPanel, new BorderLayout().SOUTH);		//orderEndPanel을 BorderLayout의 남쪽에 추가
 	}
 	
