@@ -14,7 +14,7 @@ public class MainImagePanel extends JPanel {
 	public MainImagePanel() {
 		//에러가 발생할 수 있는 코드
 		try {
-			String filename = "img/서브웨이시작화면.png";
+			String filename = "img/SUBWAY.png";
 			img = ImageIO.read(new File(filename));
 		//에러가 발생할 경우 수행하는 코드
 		} catch (IOException e) {
