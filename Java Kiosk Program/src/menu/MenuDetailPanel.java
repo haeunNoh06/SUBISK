@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Frame.OptionPopUp;
+import dto.MenuDTO;
 
 public class MenuDetailPanel extends JPanel {
 	ImageIcon menuImage;									//메뉴 이미지
@@ -27,13 +28,13 @@ public class MenuDetailPanel extends JPanel {
 	JTextField count = new JTextField("0");							//주문 수량
 	JButton optionSelect = new JButton("옵션 선택");								//주문 확인 버튼
 	JPanel plusMinusPanel = new JPanel();							//+버튼과 -버튼 주문 수량이 들어있는 패널
-	MenuVo menuVo;													//메뉴 정보가 들어있는 menuVo
+	MenuDTO menuVo;													//메뉴 정보가 들어있는 menuVo
 	
-	public MenuVo getMenuVo() {
+	public MenuDTO getMenuVo() {
 		return menuVo;
 	}
 
-	public void setMenuVo(MenuVo menuVo) {
+	public void setMenuVo(MenuDTO menuVo) {
 		this.menuVo = menuVo;
 	}
 
@@ -46,7 +47,7 @@ public class MenuDetailPanel extends JPanel {
 		});
 	}
 	
-	public MenuDetailPanel(MenuVo menuVo) {
+	public MenuDetailPanel(MenuDTO menuVo) {
 		String sPrice;	//costlabel에 "원" 집어넣는 변수
 		
 		//생성자로부터 받은 메뉴 사진과 메뉴 이름을 MenuDetailPanel의 메뉴 사진 변수와 이름변수에 저장한다.
@@ -65,7 +66,6 @@ public class MenuDetailPanel extends JPanel {
 		
 		//플러스버튼을 눌렀을 경우
 		plusButton.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//현재 수량을 읽어라
@@ -76,12 +76,10 @@ public class MenuDetailPanel extends JPanel {
 				int plusCnt = nowCnt + 1;
 				//증가한 수치를 count에 세팅
 				count.setText(plusCnt + "");
-				
 			}
 		});
 		//마이너스버튼을 눌렀을 경우
 		minusButton.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//현재 수량을 읽어라
@@ -96,7 +94,6 @@ public class MenuDetailPanel extends JPanel {
 				int minusCnt = nowCnt - 1;
 				//증가한 수치를 count에 세팅
 				count.setText(minusCnt + "");
-				
 			}
 		});
 		
@@ -110,9 +107,7 @@ public class MenuDetailPanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "주문 개수가 0개입니다.", "오류메시지", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				new OptionPopUp().setVisible(true);
-//				processMenuDetail(menuVo, count.getText());
-				
+				new OptionPopUp();
 			}
 		});
 		
@@ -155,18 +150,4 @@ public class MenuDetailPanel extends JPanel {
 		add(p, BorderLayout.SOUTH);
 		
 	}
-
-	public static void main(String[] args) {
-//		MenuVo menu = new MenuVo("menu01", "에그마요", 2000, "img/Egg-Mayo3.png");
-		MenuVo[] classicMenu = new MenuVo[5];
-		
-		Frame f = new Frame();
-		for (int i = 0; i < 5; i++) {
-			f.add(new MenuDetailPanel(classicMenu[i]));
-		}
-		f.setVisible(true);
-		f.setSize(300,300);
-		f.setLocationRelativeTo(null);
-	}
-
 }
