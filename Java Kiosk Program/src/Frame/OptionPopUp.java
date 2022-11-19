@@ -29,8 +29,8 @@ public class OptionPopUp extends JFrame implements ActionListener {
 	String[] breadStrings = new String[]{"","허니오트", "하티", "위트", "파마산 오레가노", "화이트", "플랫브레드"};
 	JComboBox cbBreads = new JComboBox(breadStrings);
 	//치즈 종류
-	String[] cheezeStrings = new String[] {"","아메리칸 치즈", "슈레드 치즈", "모차렐라 치즈"};
-	JComboBox cbCheezes = new JComboBox(cheezeStrings);
+	String[] cheeseStrings = new String[] {"","아메리칸 치즈", "슈레드 치즈", "모차렐라 치즈"};
+	JComboBox cbCheeses = new JComboBox(cheeseStrings);
 	//뺄 야채
 	String[] vegStrings = new String[] {"","양상추", "토마토", "오이", "피망", "양파", "피클", "올리브", "할라피뇨", "아보카도"};
 	JList<String> vegList = new JList<String>(vegStrings);
@@ -46,12 +46,21 @@ public class OptionPopUp extends JFrame implements ActionListener {
 	JLabel laBreadWidth= new JLabel("빵 길이");
 	JLabel laBreadKind = new JLabel("빵 종류");
 	JLabel laVegOut = new JLabel("빼는 야채");
-	JLabel laCheezeKind = new JLabel("치즈 종류");
+	JLabel laCheeseKind = new JLabel("치즈 종류");
 	JLabel laSauceKind = new JLabel("소스 종류");
 	
 	//버튼 
 	JButton btnInit = new JButton("초기화");
 	JButton btnComplete = new JButton("주문 완료");
+
+	//안내 텍스트
+	String text = "";
+	//라디오 버튼 눌러진거 확인
+	String raWidthSelect = "15cm";	//초기값
+	String cbBreadKind;
+	String liSauceSelect;
+	String cbCheeseKind;
+	String liVegSelect;
 
 	public OptionPopUp() {
 		this.setUpUI();
@@ -64,7 +73,8 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 this.setVisible(true);
 		 this.setLocationRelativeTo(null);					//실행화면 위치 : 중간
 		 this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		 this.setTitle("재료 선택");
+		 this.setTitle("옵션 선택");
+		 this.setResizable(false);
 		 this.setLayout(null);
 		 
 		 //버튼 그룹
@@ -81,12 +91,12 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 laBreadWidth.setBounds(90, 5, 100, 100);
 		 laBreadKind.setBounds(90, 55, 100, 100);
 		 laVegOut.setBounds(90, 100, 100, 100);
-		 laCheezeKind.setBounds(90, 213, 100, 100);
+		 laCheeseKind.setBounds(90, 213, 100, 100);
 		 laSauceKind.setBounds(90, 265, 100, 100);
 		 this.add(laBreadWidth);
 		 this.add(laBreadKind);
 		 this.add(laVegOut);
-		 this.add(laCheezeKind);
+		 this.add(laCheeseKind);
 		 this.add(laSauceKind);
 		 
 		 //라디오 버튼 위치 지정
@@ -99,9 +109,9 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 
 		 //콤보 박스 위치 지정
 		 cbBreads.setBounds(210, 90, 170, 30);
-		 cbCheezes.setBounds(210, 250, 170, 30);
+		 cbCheeses.setBounds(210, 250, 170, 30);
 		 this.add(cbBreads);
-		 this.add(cbCheezes);
+		 this.add(cbCheeses);
 		 
 		 //리스트(스크롤패인) 위치 지정
 		 scrVegOut.setBounds(210, 140, 170, 90);
@@ -115,12 +125,43 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 laBreadWidth.setFont(font);
 		 laBreadKind.setFont(font);
 		 laVegOut.setFont(font);
-		 laCheezeKind.setFont(font);
+		 laCheeseKind.setFont(font);
 		 laSauceKind.setFont(font);
 		 
 		 //JList 다중 선택 모드
 		 vegList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		 sauceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		 
+		 //라디오 선택 여부
+		 raWidth15.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				raWidthSelect = "";
+				raWidthSelect = raWidth15.getText();
+				infoMsg(raWidthSelect+" 이/가 선택되었습니다.");							//안내메시지
+			}
+		});
+		 raWidth30.addActionListener(new ActionListener() {
+			 @Override
+			 public void actionPerformed(ActionEvent e) {
+				 raWidthSelect = "";
+				 raWidthSelect = raWidth30.getText();
+				 infoMsg(raWidthSelect+" 이/가 선택되었습니다.");							//안내메시지
+			 }
+		 });
+		 
+		 //빵 선택
+		 cbBreads.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if ( cbBreads.getSelectedIndex() == 0 ) return;
+				cbBreadKind = "";
+				cbBreadKind = cbBreads.getSelectedItem()+"";
+				infoMsg(cbBreadKind+" 이/가 선택되었습니다.");							//안내메시지
+				
+			}
+		});
+		 
 		 
 		 //뺄 야채 리스트 안내 문구
 		 vegList.addListSelectionListener(new ListSelectionListener() {
@@ -129,12 +170,28 @@ public class OptionPopUp extends JFrame implements ActionListener {
 				//선택한게 없다면 "선택되었습니다." 메시지 보이지 않게 return하기
 				if ( vegList.getSelectedIndex() == 0) return;
 				List<String> list = vegList.getSelectedValuesList();
-				String selectVeg = "";										//선택한 야채
+				liVegSelect = "";										//선택한 야채
+				int cnt = 0;	//0번째로 들어온 값이 아닌 것은 ,를 붙이지 않는다.
 				for ( String vegiStr : list ) {								//list에 있는 야채를 selectVeg에 더해 붙이기
-					selectVeg += vegiStr+" ";
+					cnt++;
+					if (cnt != 1) liVegSelect += ", ";
+					liVegSelect += vegiStr;
 				}
-				infoMsg(selectVeg+"가 선택되었습니다.");							//안내메시지
+				infoMsg(liVegSelect+" 이/가 선택되었습니다.");							//안내메시지
+				
 			}
+		 });
+		 
+		 //치즈 선택
+		 cbCheeses.addActionListener(new ActionListener() {
+			 @Override
+			 public void actionPerformed(ActionEvent e) {
+				 if ( cbCheeses.getSelectedIndex() == 0 ) return;
+				 cbCheeseKind = "";
+				 cbCheeseKind = cbCheeses.getSelectedItem()+"";
+				 infoMsg(cbCheeseKind+" 이/가 선택되었습니다.");							//안내메시지
+				 
+			 }
 		 });
 		 
 		 //소스 리스트 안내 문구
@@ -144,26 +201,32 @@ public class OptionPopUp extends JFrame implements ActionListener {
 				 //선택한게 없다면 "선택되었습니다." 메시지 보이지 않게 return하기
 				 if ( sauceList.getSelectedIndex() == 0) return;
 				 List<String> list = sauceList.getSelectedValuesList();
-				 String selectSauce = "";									//선택한 소스
+				 liSauceSelect = "";									//선택한 소스
+				 int cnt = 0;	//0번째로 들어온 값이 아닌 것은 ,를 붙이지 않는다.
 				 for ( String sauceStr : list ) {							//list에 있는 소스를 selectSauce에 더해 붙이기
-					 selectSauce += sauceStr+" ";	
+					 cnt++;
+					 if (cnt != 1) liSauceSelect += ", ";
+					 liSauceSelect += sauceStr;
 				 }
-				 infoMsg(selectSauce+"가 선택되었습니다.");						//안내메시지
+				 infoMsg(liSauceSelect+" 이/가 선택되었습니다.");						//안내메시지
 			 }
 		 });
 		 
-		 //선택완료 버튼 액션리스너
+		 //주문완료 버튼 액션리스너
 		 btnComplete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if ( cbBreads.getSelectedIndex() == 0 
-						|| cbCheezes.getSelectedIndex() == 0
-						|| scrVegOut.getComponentCount() == 0
-						|| scrSauce.getComponentCount() == 0) {
+						|| cbCheeses.getSelectedIndex() == 0
+						|| vegList.isSelectionEmpty() == true
+						|| sauceList.isSelectionEmpty() == true) {
 					errorMsg("빈칸이 존재합니다");
 					return;
 				} 
-				infoMsg("선택이 완료되었습니다.");
+				//getSelectedItem : 콤보박스로부터 선택항목 가져오기
+				text += raWidthSelect+"\n"+cbBreadKind+"\n"+liVegSelect+"\n"+cbCheeseKind+"\n"+liSauceSelect+"\n";
+				infoMsg(text+"선택이 완료되었습니다.");
+				text = "";
 				setVisible(false);
 			}
 		});
@@ -174,7 +237,7 @@ public class OptionPopUp extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				raWidth15.setSelected(true);
 				cbBreads.setSelectedIndex(0);
-				cbCheezes.setSelectedIndex(0);
+				cbCheeses.setSelectedIndex(0);
 				vegList.setSelectedIndex(0);
 				sauceList.setSelectedIndex(0);
 			}
@@ -189,10 +252,6 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		JOptionPane.showInternalMessageDialog(null, msg, "안내", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public static void main(String[] args) {
-		new OptionPopUp();
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
