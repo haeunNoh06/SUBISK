@@ -102,8 +102,6 @@ public class OrderFrame extends JFrame {
 		JTable listTable = new JTable(contents, header);
 		//listTable의 스크롤 생성, Scroll이 listTable에서 가능하도록 한다. 
 		JScrollPane menuListScroll = new JScrollPane(listTable);
-		//menuListScroll을 프레임에 추가
-//		add(menuListScroll);
 		
 		//sumTxt에 총 합계 금액 넣기
 		for ( int i = 0; i < contents.length; i++ ) {
@@ -127,16 +125,7 @@ public class OrderFrame extends JFrame {
 		orderEndPanel.add(orderSumPanel);		//총 가격을 나타내는 패널을 orderrEndPanel에 추가
 		orderEndPanel.add(btnPanel);			//주문 완료 버튼을 orderEndPanel에 추가
 		
-//		add(orderListPanel);								//상품명,수량,가격을 나타낼 패널을 프레임에 추가
-//		add(orderEndPanel);		//orderEndPanel을 BorderLayout의 남쪽에 추가
 		add(orderListPanel, new BorderLayout().CENTER);		//상품명,수량,가격을 나타낼 패널을 프레임에 추가
-//		orderListPanel.add(toppingBtn);
 		add(orderEndPanel, new BorderLayout().SOUTH);		//orderEndPanel을 BorderLayout의 남쪽에 추가
 	}
-	
-	public static void main(String[] args) {
-		var orderFrame = new OrderFrame();
-		orderFrame.setVisible(true);
-	}
-
 }
