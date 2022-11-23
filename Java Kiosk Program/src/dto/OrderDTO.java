@@ -1,6 +1,7 @@
 package dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDTO {
@@ -11,6 +12,9 @@ public class OrderDTO {
 	private List<OrderDetailDTO> orderDetailList;
 	
 	public List<OrderDetailDTO> getOrderDetailList() {
+		if ( orderDetailList == null) {
+			orderDetailList = new ArrayList<>();
+		}
 		return orderDetailList;
 	}
 	public void setOrderDetailList(List<OrderDetailDTO> orderDetailList) {
