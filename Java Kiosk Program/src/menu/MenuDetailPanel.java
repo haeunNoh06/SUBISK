@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 
 import Frame.OptionPopUp;
 import dto.MenuDTO;
+import dto.OrderDTO;
 
 public class MenuDetailPanel extends JPanel {
 	ImageIcon menuImage;									//메뉴 이미지
@@ -28,33 +29,19 @@ public class MenuDetailPanel extends JPanel {
 	JTextField count = new JTextField("0");							//주문 수량
 	JButton optionSelect = new JButton("옵션 선택");								//주문 확인 버튼
 	JPanel plusMinusPanel = new JPanel();							//+버튼과 -버튼 주문 수량이 들어있는 패널
-	MenuDTO menuVo;													//메뉴 정보가 들어있는 menuVo
+	MenuDTO menuDto;													//메뉴 정보가 들어있는 menuVo
+	OrderDTO orderDto;
 	
-	public MenuDTO getMenuVo() {
-		return menuVo;
-	}
 
-	public void setMenuVo(MenuDTO menuVo) {
-		this.menuVo = menuVo;
-	}
-
-	public void opptionSetUp() {
-		optionSelect.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new OptionPopUp().setVisible(true);
-			}
-		});
-	}
-	
-	public MenuDetailPanel(MenuDTO menuVo) {
+	public MenuDetailPanel(MenuDTO menuDto, OrderDTO orderDto) {
 		String sPrice;	//costlabel에 "원" 집어넣는 변수
 		
 		//생성자로부터 받은 메뉴 사진과 메뉴 이름을 MenuDetailPanel의 메뉴 사진 변수와 이름변수에 저장한다.
-		this.menuVo = menuVo;
+		this.menuDto = menuDto;
+		this.orderDto = orderDto;
 		
 		//menuImage 생성
-		this.menuImage = new ImageIcon(menuVo.getImageFileName());
+		this.menuImage = new ImageIcon(menuDto.getImageFileName());
 		this.imageLabel = new JLabel(menuImage);
 		
 		//개별 컴포넌트에 대해 이벤트 핸들러 지정하기
@@ -66,6 +53,7 @@ public class MenuDetailPanel extends JPanel {
 		
 		//플러스버튼을 눌렀을 경우
 		plusButton.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//현재 수량을 읽어라
@@ -76,10 +64,12 @@ public class MenuDetailPanel extends JPanel {
 				int plusCnt = nowCnt + 1;
 				//증가한 수치를 count에 세팅
 				count.setText(plusCnt + "");
+				
 			}
 		});
 		//마이너스버튼을 눌렀을 경우
 		minusButton.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//현재 수량을 읽어라
@@ -94,6 +84,7 @@ public class MenuDetailPanel extends JPanel {
 				int minusCnt = nowCnt - 1;
 				//증가한 수치를 count에 세팅
 				count.setText(minusCnt + "");
+				
 			}
 		});
 		
@@ -107,18 +98,20 @@ public class MenuDetailPanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "주문 개수가 0개입니다.", "오류메시지", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				new OptionPopUp();
+				new OptionPopUp(MenuDetailPanel.this);
+//				processMenuDetail(menuVo, count.getText());
+				
 			}
 		});
 		
 		//costLabel
 		//getPrice()는 int니까 setText에 넣을려면 String으로 변환해야 함
-		costLabel.setText(menuVo.getPrice()+"");
+		costLabel.setText(menuDto.getPrice()+"");
 		
 		//menunameLabel
 		//getMenuId()는 String
 		//menuNameLabel에 메뉴 이름 넣기
-		menuNameLabel.setText(menuVo.getMenuName());
+		menuNameLabel.setText(menuDto.getMenuName());
 		
 		setSize(600,800);
 		setVisible(true);
@@ -142,12 +135,37 @@ public class MenuDetailPanel extends JPanel {
 		
 		//costLabel
 		//포맷터를 이용해서 숫자에 자리 표시 콤마를 넣게 한다
-		sPrice = String.format("%,d원", menuVo.getPrice());
+		sPrice = String.format("%,d원", menuDto.getPrice());
 		costLabel.setText(sPrice);
 		
 		//MenuDetailPanel에 메뉴사진, 가격, 수량, 확인버튼을 BorderLayout으로 넣기
 		add(imageLabel);
 		add(p, BorderLayout.SOUTH);
 		
+	}
+
+	public MenuDTO getMenuDto() {
+		return menuDto;
+	}
+	
+	public void setMenuDto(MenuDTO menuVo) {
+		this.menuDto = menuDto;
+	}
+	
+
+	public JTextField getCount() {
+		return count;
+	}
+
+	public void setCount(JTextField count) {
+		this.count = count;
+	}
+
+	public OrderDTO getOrderDto() {
+		return orderDto;
+	}
+
+	public void setOrderDto(OrderDTO orderDto) {
+		this.orderDto = orderDto;
 	}
 }
