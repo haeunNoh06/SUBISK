@@ -17,10 +17,14 @@ public class ConnectionMgr {
 		}
 	}
 	
+	public static Connection getCon() {
+		return con;
+	}
+	public static void setCon(Connection con) {
+		ConnectionMgr.con = con;
+	}
 	//Connection 가져오기
 	public static Connection getConnection() {
-		//없으면 만들고 리턴
-		//있으면 있는거 리턴
 		if(con == null) {
 			con = makeConnection();
 		}
