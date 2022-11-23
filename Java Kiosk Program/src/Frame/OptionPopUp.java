@@ -14,9 +14,15 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import dto.MenuDTO;
+import dto.OrderDTO;
+import dto.OrderDetailDTO;
+import menu.MenuDetailPanel;
 
 public class OptionPopUp extends JFrame implements ActionListener {
 	
@@ -51,18 +57,21 @@ public class OptionPopUp extends JFrame implements ActionListener {
 	
 	//버튼 
 	JButton btnInit = new JButton("초기화");
-	JButton btnComplete = new JButton("주문 완료");
+	JButton btnComplete = new JButton("선택 완료");
 
 	//안내 텍스트
 	String text = "";
 	//라디오 버튼 눌러진거 확인
 	String raWidthSelect = "15cm";	//초기값
 	String cbBreadKind;
-	String liSauceSelect;
-	String cbCheeseKind;
 	String liVegSelect;
-
-	public OptionPopUp() {
+	String cbCheeseKind;
+	String liSauceSelect;
+	
+	MenuDetailPanel menuDetailPanel;
+	
+	public OptionPopUp(MenuDetailPanel menuDetailPanel) {
+		this.menuDetailPanel = menuDetailPanel;
 		this.setUpUI();
 	}
 	
@@ -72,7 +81,8 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 this.setSize(500,550);
 		 this.setVisible(true);
 		 this.setLocationRelativeTo(null);					//실행화면 위치 : 중간
-		 this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 //x버튼 누르면 자원 회수
+		 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		 this.setTitle("옵션 선택");
 		 this.setResizable(false);
 		 this.setLayout(null);
@@ -227,6 +237,30 @@ public class OptionPopUp extends JFrame implements ActionListener {
 				text += raWidthSelect+"\n"+cbBreadKind+"\n"+liVegSelect+"\n"+cbCheeseKind+"\n"+liSauceSelect+"\n";
 				infoMsg(text+"선택이 완료되었습니다.");
 				text = "";
+				
+				
+				
+				//주문 상세 작성
+				MenuDTO menuDto = menuDetailPanel.getMenuDto();
+				OrderDTO orderDto = menuDetailPanel.getOrderDto();
+				
+				OrderDetailDTO orderDetailDto = new OrderDetailDTO();
+				orderDetailDto.setMenuId(menuDto.getMenuId());
+				orderDetailDto.setMenuDto(menuDto);
+				orderDetailDto.setOrderBreadSize(raWidthSelect);
+				orderDetailDto.setOrderBreadKind(cbBreadKind);
+				orderDetailDto.setOrderExceptVeg(liVegSelect);
+				orderDetailDto.setOrderCheese(cbCheeseKind);
+				orderDetailDto.setOrderSauce(liSauceSelect);
+				
+				//수량 정보 가져오기
+				JTextField tfCount = menuDetailPanel.getCount();
+				String count = tfCount.getText();
+				orderDetailDto.setOrderAmount(Integer.parseInt(count));
+				
+				List<OrderDetailDTO> orderDetailList = orderDto.getOrderDetailList();
+				orderDetailList.add(orderDetailDto);
+				
 				setVisible(false);
 			}
 		});
@@ -249,7 +283,7 @@ public class OptionPopUp extends JFrame implements ActionListener {
 	}
 	
 	public void infoMsg(String msg) {
-		JOptionPane.showInternalMessageDialog(null, msg, "안내", JOptionPane.INFORMATION_MESSAGE);
+//		JOptionPane.showInternalMessageDialog(null, msg, "안내", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	@Override
