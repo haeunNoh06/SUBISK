@@ -24,8 +24,7 @@ public class MainImagePanel extends JPanel {
 
 	@Override
 	public void paint(Graphics g) {
-
-		//이미지를 x좌표 10, y좌표 10의 위치에서 나타나도록 한다
+		//이미지를 x좌표 0, y좌표 0의 위치에서 나타나도록 한다
 		g.drawImage(img, 0,0,null);
 	}
 }
