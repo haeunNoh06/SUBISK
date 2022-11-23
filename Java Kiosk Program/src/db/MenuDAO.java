@@ -30,7 +30,7 @@ public class MenuDAO {
 		//MenuDTO를 담을 공간 준비
 		List<MenuDTO> menuList =  new ArrayList<>();
 		
-		String sql = "select * from menu where menu_category = ?";
+		String sql = "select * from tb_menu where menu_category = ?";
 		try {
 			this.pstmt = con.prepareStatement(sql);
 			this.pstmt.setString(1, category);
@@ -49,14 +49,12 @@ public class MenuDAO {
 				
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if(this.pstmt != null) {
 				try {
 					this.pstmt.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				this.pstmt = null;
@@ -65,7 +63,6 @@ public class MenuDAO {
 				try {
 					this.rs.close();
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				this.rs = null;
