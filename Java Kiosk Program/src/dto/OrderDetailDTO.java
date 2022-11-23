@@ -4,6 +4,8 @@ public class OrderDetailDTO {
 	
 	private int orderDetailId;
 	private int menuId;
+	private MenuDTO menuDto;
+
 	private int orderId;
 	private int orderAmount;
 	private String orderBreadSize;
@@ -67,6 +69,23 @@ public class OrderDetailDTO {
 		this.orderSauce = orderSauce;
 	}
 	
+	public MenuDTO getMenuDto() {
+		return menuDto;
+	}
+	public void setMenuDto(MenuDTO menuDto) {
+		this.menuDto = menuDto;
+	}	
 	
+	//모든 옵션
+	public String getOptionAll() {
+		String orderOption = "";
+		orderOption += orderBreadSize+"\n";
+		orderOption += orderBreadKind+"\n";
+		orderOption += orderExceptVeg+"\n";
+		orderOption += orderCheese+"\n";
+		orderOption += orderSauce;
+		
+		return orderOption;
+	}
 	
 }
