@@ -15,11 +15,6 @@ public class MenuDTO {
 		
 	}
 	
-	//classic 메뉴 정보 넣기
-//	public int classic (MenuVo menuVo) {
-//		
-//	}
-
 	public String getImageFileName() {
 		return imageFileName;
 	}
