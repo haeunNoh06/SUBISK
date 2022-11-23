@@ -20,20 +20,8 @@ import com.sun.tools.javac.Main;
 //키오스크 시작 화면
 public class KioskStartFrame extends JFrame {
 	
-//	private ImageIcon imgBrightStart = new ImageIcon(Main.class.getResource("../img/btnBrightStart.png"));  //이미지를 불러옴.
-//	private ImageIcon imgDarkStart = new ImageIcon(Main.class.getResource("../img/btnDarkStart.png"));  //이미지를 불러옴.
-	//이미지 불러오기
-//	static JPanel page2=new JPanel() {
-//		/*이미지*/
-//		Image background=new ImageIcon(Main.class.getResource("../img/btnBrightStart.png")).getImage();
-//		public void paint(Graphics g) {//그리는 함수
-//				g.drawImage("../img/btnBrightStart.png", 0, 0, null);//background를 그려줌		
-//		}
-//	};
-
 	//주문시작 버튼을 추가할 패널
 	JPanel panelStartBtn = new JPanel();
-//	JPanel panelMainImg = new JPanel();
 	
 	//이미지
 	MainImagePanel mainImgPanel = new MainImagePanel();
@@ -63,12 +51,11 @@ public class KioskStartFrame extends JFrame {
 	    //버튼에 마우스가 올라갈 때 이미지 변환
 	    btnStart.setRolloverIcon(imgDarkStart);
 	    
-	    
 	    //블로그 느긋한 주인장 : https://intunknown.tistory.com/477
 		btnStart.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				new MenuFrame();
+				new MenuFrame(KioskStartFrame.this);
 				setVisible(false);
 			}
 		});
