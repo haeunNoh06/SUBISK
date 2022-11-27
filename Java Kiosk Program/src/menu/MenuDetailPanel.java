@@ -15,9 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Frame.OptionPopUp;
 import dto.MenuDTO;
 import dto.OrderDTO;
+import frame.OptionPopUp;
 
 public class MenuDetailPanel extends JPanel {
 	ImageIcon menuImage;									//메뉴 이미지
