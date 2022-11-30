@@ -23,13 +23,13 @@ public class MenuDetailPanel extends JPanel {
 	ImageIcon menuImage;									//메뉴 이미지
 	JLabel imageLabel;										//메뉴 이미지 넣는 라벨
 	JLabel costLabel = new JLabel("원",JLabel.CENTER);		//가격이 들어갈 라벨
-	JLabel menuNameLabel = new JLabel("메뉴이름", JLabel.CENTER);		//메뉴 이름 라벨
-	JButton plusButton = new JButton("+");							//+ 버튼
-	JButton minusButton = new JButton("-");							//- 버튼
-	JTextField count = new JTextField("0");							//주문 수량
-	JButton optionSelect = new JButton("옵션 선택");								//주문 확인 버튼
-	JPanel plusMinusPanel = new JPanel();							//+버튼과 -버튼 주문 수량이 들어있는 패널
-	MenuDTO menuDto;													//메뉴 정보가 들어있는 menuVo
+	JLabel menuNameLabel = new JLabel("메뉴이름", JLabel.CENTER);	//메뉴 이름 라벨
+	JButton plusButton = new JButton("+");						//+ 버튼
+	JButton minusButton = new JButton("-");						//- 버튼
+	JTextField count = new JTextField("0");						//주문 수량
+	JButton optionSelect = new JButton("옵션 선택");				//옵션 선택 버튼
+	JPanel plusMinusPanel = new JPanel();						//+버튼과 -버튼 주문 수량이 들어있는 패널
+	MenuDTO menuDto;											//메뉴 정보가 들어있는 menuVo
 	OrderDTO orderDto;
 	
 
@@ -52,56 +52,46 @@ public class MenuDetailPanel extends JPanel {
 		count.setHorizontalAlignment(JTextField.CENTER);
 		
 		//플러스버튼을 눌렀을 경우
-		plusButton.addActionListener(new ActionListener() {
+		plusButton.addActionListener(e -> {
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//현재 수량을 읽어라
-				String nowCount = count.getText();
-			    //숫자로 변환
-				int nowCnt = Integer.parseInt(nowCount);
-				//현재 수치에 1을 더한다.
-				int plusCnt = nowCnt + 1;
-				//증가한 수치를 count에 세팅
-				count.setText(plusCnt + "");
-				
-			}
+			//현재 수량을 읽어라
+			String nowCount = count.getText();
+			//숫자로 변환
+			int nowCnt = Integer.parseInt(nowCount);
+			//현재 수치에 1을 더한다.
+			int plusCnt = nowCnt + 1;
+			//증가한 수치를 count에 세팅
+			count.setText(plusCnt + "");
+			
 		});
 		//마이너스버튼을 눌렀을 경우
-		minusButton.addActionListener(new ActionListener() {
+		minusButton.addActionListener(e -> {
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//현재 수량을 읽어라
-				String nowCount = count.getText();
-				//숫자로 변환
-				int nowCnt = Integer.parseInt(nowCount);
-				//만약 nowCnt가 0이라면 감소시키지 말아라
-				if ( nowCnt == 0 ) {
-					return;
-				}
-				//현재 수치에 1을 더한다.
-				int minusCnt = nowCnt - 1;
-				//증가한 수치를 count에 세팅
-				count.setText(minusCnt + "");
-				
+			//현재 수량을 읽어라
+			String nowCount = count.getText();
+			//숫자로 변환
+			int nowCnt = Integer.parseInt(nowCount);
+			//만약 nowCnt가 0이라면 감소시키지 말아라
+			if ( nowCnt == 0 ) {
+				return;
 			}
+			//현재 수치에 1을 더한다.
+			int minusCnt = nowCnt - 1;
+			//증가한 수치를 count에 세팅
+			count.setText(minusCnt + "");
+				
 		});
 		
 		//개별 메뉴의 개수를 확정했을 때
-		optionSelect.addActionListener(new ActionListener() {
+		optionSelect.addActionListener(e -> {
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String cnt = count.getText();
-				if("0".equals(cnt)) {
-					JOptionPane.showMessageDialog(null, "주문 개수가 0개입니다.", "오류메시지", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				new OptionPopUp(MenuDetailPanel.this);
-//				processMenuDetail(menuVo, count.getText());
-				
+			String cnt = count.getText();
+			if("0".equals(cnt)) {
+				JOptionPane.showMessageDialog(null, "주문 개수가 0개입니다.", "오류메시지", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			new OptionPopUp(MenuDetailPanel.this);
+				
 		});
 		
 		//costLabel
