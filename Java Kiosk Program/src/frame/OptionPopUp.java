@@ -19,6 +19,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import common.CommonUtil;
 import dto.MenuDTO;
 import dto.OrderDTO;
 import dto.OrderDetailDTO;
@@ -75,14 +76,11 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		this.setUpUI();
 	}
 	
-	
-	
 	public void setUpUI() {
 		 this.setSize(500,550);
+		 this.setLocation(275,140);
 		 this.setVisible(true);
-		 this.setLocationRelativeTo(null);					//실행화면 위치 : 중간
-		 //x버튼 누르면 자원 회수
-		 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//x버튼 누르면 자원 회수
 		 this.setTitle("옵션 선택");
 		 this.setResizable(false);
 		 this.setLayout(null);
@@ -143,34 +141,21 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 sauceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		 
 		 //라디오 선택 여부
-		 raWidth15.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				raWidthSelect = "";
-				raWidthSelect = raWidth15.getText();
-				infoMsg(raWidthSelect+" 이/가 선택되었습니다.");							//안내메시지
-			}
-		});
-		 raWidth30.addActionListener(new ActionListener() {
-			 @Override
-			 public void actionPerformed(ActionEvent e) {
-				 raWidthSelect = "";
-				 raWidthSelect = raWidth30.getText();
-				 infoMsg(raWidthSelect+" 이/가 선택되었습니다.");							//안내메시지
-			 }
+		 raWidth15.addActionListener(e -> {
+			raWidthSelect = "";
+			raWidthSelect = raWidth15.getText();
+		 });
+		 raWidth30.addActionListener(e -> {
+			 raWidthSelect = "";
+			 raWidthSelect = raWidth30.getText();
 		 });
 		 
 		 //빵 선택
-		 cbBreads.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if ( cbBreads.getSelectedIndex() == 0 ) return;
-				cbBreadKind = "";
-				cbBreadKind = cbBreads.getSelectedItem()+"";
-				infoMsg(cbBreadKind+" 이/가 선택되었습니다.");							//안내메시지
-				
-			}
-		});
+		 cbBreads.addActionListener(e -> {
+			if ( cbBreads.getSelectedIndex() == 0 ) return;
+			cbBreadKind = "";
+			cbBreadKind = cbBreads.getSelectedItem()+"";
+		 });
 		 
 		 
 		 //뺄 야채 리스트 안내 문구
@@ -187,21 +172,14 @@ public class OptionPopUp extends JFrame implements ActionListener {
 					if (cnt != 1) liVegSelect += ", ";
 					liVegSelect += vegiStr;
 				}
-				infoMsg(liVegSelect+" 이/가 선택되었습니다.");							//안내메시지
-				
 			}
 		 });
 		 
 		 //치즈 선택
-		 cbCheeses.addActionListener(new ActionListener() {
-			 @Override
-			 public void actionPerformed(ActionEvent e) {
-				 if ( cbCheeses.getSelectedIndex() == 0 ) return;
-				 cbCheeseKind = "";
-				 cbCheeseKind = cbCheeses.getSelectedItem()+"";
-				 infoMsg(cbCheeseKind+" 이/가 선택되었습니다.");							//안내메시지
-				 
-			 }
+		 cbCheeses.addActionListener( e -> {
+			 if ( cbCheeses.getSelectedIndex() == 0 ) return;
+			 cbCheeseKind = "";
+			 cbCheeseKind = cbCheeses.getSelectedItem()+"";
 		 });
 		 
 		 //소스 리스트 안내 문구
@@ -218,72 +196,59 @@ public class OptionPopUp extends JFrame implements ActionListener {
 					 if (cnt != 1) liSauceSelect += ", ";
 					 liSauceSelect += sauceStr;
 				 }
-				 infoMsg(liSauceSelect+" 이/가 선택되었습니다.");						//안내메시지
 			 }
 		 });
 		 
 		 //주문완료 버튼 액션리스너
-		 btnComplete.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if ( cbBreads.getSelectedIndex() == 0 
-						|| cbCheeses.getSelectedIndex() == 0
-						|| vegList.isSelectionEmpty() == true
-						|| sauceList.isSelectionEmpty() == true) {
-					errorMsg("빈칸이 존재합니다");
-					return;
-				} 
-				//getSelectedItem : 콤보박스로부터 선택항목 가져오기
-				text += raWidthSelect+"\n"+cbBreadKind+"\n"+liVegSelect+"\n"+cbCheeseKind+"\n"+liSauceSelect+"\n";
-				infoMsg(text+"선택이 완료되었습니다.");
-				text = "";
+		 btnComplete.addActionListener(e -> {
+			if ( cbBreads.getSelectedIndex() == 0 
+					|| cbCheeses.getSelectedIndex() == 0
+					|| vegList.isSelectionEmpty() == true
+					|| sauceList.isSelectionEmpty() == true) {
+				errorMsg("빈칸이 존재합니다");
+				return;
+			} 
+			//getSelectedItem : 콤보박스로부터 선택항목 가져오기
+			text += raWidthSelect+"\n"+cbBreadKind+"\n"+liVegSelect+"\n"+cbCheeseKind+"\n"+liSauceSelect+"\n";
+			CommonUtil.infoMsg(text+"선택이 완료되었습니다.");
+			text = "";
 				
+			//주문 상세 작성
+			MenuDTO menuDto = menuDetailPanel.getMenuDto();
+			OrderDTO orderDto = menuDetailPanel.getOrderDto();
+			
+			OrderDetailDTO orderDetailDto = new OrderDetailDTO();
+			orderDetailDto.setMenuId(menuDto.getMenuId());
+			orderDetailDto.setMenuDto(menuDto);
+			orderDetailDto.setOrderBreadSize(raWidthSelect);
+			orderDetailDto.setOrderBreadKind(cbBreadKind);
+			orderDetailDto.setOrderExceptVeg(liVegSelect);
+			orderDetailDto.setOrderCheese(cbCheeseKind);
+			orderDetailDto.setOrderSauce(liSauceSelect);
 				
+			//수량 정보 가져오기
+			JTextField tfCount = menuDetailPanel.getCount();
+			String count = tfCount.getText();
+			orderDetailDto.setOrderAmount(Integer.parseInt(count));
 				
-				//주문 상세 작성
-				MenuDTO menuDto = menuDetailPanel.getMenuDto();
-				OrderDTO orderDto = menuDetailPanel.getOrderDto();
+			List<OrderDetailDTO> orderDetailList = orderDto.getOrderDetailList();
+			orderDetailList.add(orderDetailDto);
 				
-				OrderDetailDTO orderDetailDto = new OrderDetailDTO();
-				orderDetailDto.setMenuId(menuDto.getMenuId());
-				orderDetailDto.setMenuDto(menuDto);
-				orderDetailDto.setOrderBreadSize(raWidthSelect);
-				orderDetailDto.setOrderBreadKind(cbBreadKind);
-				orderDetailDto.setOrderExceptVeg(liVegSelect);
-				orderDetailDto.setOrderCheese(cbCheeseKind);
-				orderDetailDto.setOrderSauce(liSauceSelect);
-				
-				//수량 정보 가져오기
-				JTextField tfCount = menuDetailPanel.getCount();
-				String count = tfCount.getText();
-				orderDetailDto.setOrderAmount(Integer.parseInt(count));
-				
-				List<OrderDetailDTO> orderDetailList = orderDto.getOrderDetailList();
-				orderDetailList.add(orderDetailDto);
-				
-				setVisible(false);
-			}
+			setVisible(false);
 		});
 		 
 		//초기화 버튼눌러서 초기화하기
-		btnInit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				raWidth15.setSelected(true);
-				cbBreads.setSelectedIndex(0);
-				cbCheeses.setSelectedIndex(0);
-				vegList.setSelectedIndex(0);
-				sauceList.setSelectedIndex(0);
-			}
+		btnInit.addActionListener(e -> {
+			raWidth15.setSelected(true);
+			cbBreads.setSelectedIndex(0);
+			cbCheeses.setSelectedIndex(0);
+			vegList.setSelectedIndex(0);
+			sauceList.setSelectedIndex(0);
 		});
 	}
 	
 	public void errorMsg(String msg) {
 		JOptionPane.showMessageDialog(null, msg, "경고", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	public void infoMsg(String msg) {
-//		JOptionPane.showInternalMessageDialog(null, msg, "안내", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	@Override

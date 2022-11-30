@@ -17,6 +17,8 @@ import javax.swing.JPanel;
 
 import com.sun.tools.javac.Main;
 
+import common.CommonUtil;
+
 //키오스크 시작 화면
 public class KioskStartFrame extends JFrame {
 	
@@ -24,17 +26,15 @@ public class KioskStartFrame extends JFrame {
 	JPanel panelStartBtn = new JPanel();
 	
 	//이미지
-	MainImagePanel mainImgPanel = new MainImagePanel();
-	ImageIcon imgBrightStart = new ImageIcon("./img/btnBrightStart.png"); 
-	ImageIcon imgDarkStart = new ImageIcon("./img/btnDarkStart.png");  
+	MainImagePanel mainImgPanel = new MainImagePanel("./img/SUBWAY.png");
 
 	//주문시작 버튼
-	JButton btnStart = new JButton(imgBrightStart);
+	JButton btnStart = new JButton(new ImageIcon("./img/btnBrightStart.png"));
 	
 	public KioskStartFrame() {
 		
 		this.setSize(656, 820);								//Frame 크기 가로 636, 세로 820
-		this.setLocationRelativeTo(null);					//실행화면 위치 : 중간
+		this.setLocation(200,0);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);		//프로그램 정상 종료
 		this.setTitle("서브웨이 키오스크 프로그램");			//프레임 제목
 		this.setResizable(false);
@@ -49,15 +49,12 @@ public class KioskStartFrame extends JFrame {
 	    
 	    //https://m.blog.naver.com/hotkimchi13/221279151887
 	    //버튼에 마우스가 올라갈 때 이미지 변환
-	    btnStart.setRolloverIcon(imgDarkStart);
+	    btnStart.setRolloverIcon(new ImageIcon("./img/btnDarkStart.png"));
 	    
-	    //블로그 느긋한 주인장 : https://intunknown.tistory.com/477
-		btnStart.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				new MenuFrame();
-				setVisible(false);
-			}
+	    //주문 시작
+		btnStart.addActionListener(e -> {
+			new MenuFrame(KioskStartFrame.this);
+			this.setVisible(false);
 		});
 		
 		panelStartBtn.setBounds(119, 500, 400, 75);
@@ -69,11 +66,14 @@ public class KioskStartFrame extends JFrame {
 		//프레임에 추가
 		this.add(mainImgPanel);
 		this.add(panelStartBtn);
+		
+		repaint();
 	}
+	
  }
 
 class WinCloser extends WindowAdapter {
 	public void windowClosing (WindowEvent e) {
-		System.exit(0);
+		CommonUtil.programExit();
 	}
 }

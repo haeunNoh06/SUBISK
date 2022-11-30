@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import common.CommonUtil;
 import db.MenuDAO;
 import dto.MenuDTO;
 import dto.OrderDTO;
@@ -47,14 +48,16 @@ public class MenuFrame extends JFrame implements WindowListener{
 	
 	OrderDTO orderDto = new OrderDTO();
 	
-	public MenuFrame() {
-		setSize(656,820);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);//x버튼 눌러도 이 화면이 사라지지 않도록
+	public MenuFrame(KioskStartFrame kioskStartFrame) {
+		this.kioskStartFrame = kioskStartFrame;
+		
+		this.setSize(656,820);
+		this.setLocation(200,0);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);//x버튼 눌러도 이 화면이 사라지지 않도록
 		this.addWindowListener(this);
-		setResizable(false);//사용자가 크기 변경 불가
-		setVisible(true);
-		setTitle("메뉴 선택");
+		this.setResizable(false);//사용자가 크기 변경 불가
+		this.setVisible(true);
+		this.setTitle("메뉴 선택");
 		
 		//각 패널에 그리드 레이아웃 적용
 		aPanel.setLayout(new GridLayout(6,3));
@@ -65,13 +68,9 @@ public class MenuFrame extends JFrame implements WindowListener{
 		//주문 버튼 BorderLayout의 남쪽에 놓기
 		menuOrderPanel.add(homeBtn);
 		
-		homeBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				MenuFrame.this.setVisible(false);
-				kioskStartFrame.setVisible(true);
-			}
+		homeBtn.addActionListener(e -> {
+			MenuFrame.this.setVisible(false);
+			kioskStartFrame.setVisible(true);
 		});
 		
 		//orderBtn버튼을 menuOrderPanel에 더하기
@@ -83,13 +82,10 @@ public class MenuFrame extends JFrame implements WindowListener{
 		setUpPanel(fPanel, "freshLight");
 		setUpPanel(pPanel, "premium");
 		
-		//주문 버튼 btnOrder을 누르면 발생하는 이벤트
-		btnNext.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new OrderFrame(MenuFrame.this, orderDto);
-				MenuFrame.this.setVisible(false);
-			}
+		//다음으로 버튼 btnOrder을 누르면 발생하는 이벤트
+		btnNext.addActionListener(e -> {
+			new OrderFrame(MenuFrame.this, orderDto);
+			MenuFrame.this.setVisible(false);
 		});
 		
 		//스크롤바 생성
@@ -137,7 +133,7 @@ public class MenuFrame extends JFrame implements WindowListener{
 		System.out.println("windowclosing");
 		int result = JOptionPane.showConfirmDialog(this, "종료하시겠습니까?", "프로그램 종료 확인", JOptionPane.OK_CANCEL_OPTION);
 		if ( result == JOptionPane.OK_OPTION ) {
-			System.exit(0);
+			CommonUtil.programExit();
 		}
 	}
 

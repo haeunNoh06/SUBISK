@@ -11,10 +11,10 @@ import javax.swing.JPanel;
 public class MainImagePanel extends JPanel {
 	BufferedImage img;
 
-	public MainImagePanel() {
+	public MainImagePanel(String src) {
 		//에러가 발생할 수 있는 코드
 		try {
-			String filename = "img/SUBWAY.png";
+			String filename = src;
 			img = ImageIO.read(new File(filename));
 		//에러가 발생할 경우 수행하는 코드
 		} catch (IOException e) {
