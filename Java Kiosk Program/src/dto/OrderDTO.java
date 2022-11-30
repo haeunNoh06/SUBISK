@@ -9,6 +9,7 @@ public class OrderDTO {
 	private int orderId;
 	private int orderSum;
 	private Date orderDate;
+	//tb_order_detail
 	private List<OrderDetailDTO> orderDetailList;
 	
 	public List<OrderDetailDTO> getOrderDetailList() {
