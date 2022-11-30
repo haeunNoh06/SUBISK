@@ -9,6 +9,7 @@ import java.util.List;
 
 import dto.MenuDTO;
 import dto.OrderDTO;
+import dto.OrderDetailDTO;
 
 
 /**
@@ -43,9 +44,76 @@ public class OrderDAO {
 	}
 	
 	//메뉴 추가하는 작업
-	public void insertOrder(OrderDTO orderDto) {
-		String sql = "INSERT INTO tb_order(order_sum, order_date)"
-				+ "VALUES ("
+	public void saveOrder(OrderDTO orderDto) {
+		// orderMaster 저장
+		String insertOrderSql = "INSERT INTO tb_order(order_id, order_sum, order_date) VALUES (?,?, now())";
+		// orderDetail 저장
+		String insertOrderDetailSql = "INSERT INTO tb_order_detail(menu_id, order_id, order_amount, order_bread_size, order_bread_kind, order_except_veg, order_cheese, order_sauce) VALUES (?,?,?,?,?,?,?,?)";
+		// 생성될 orderId 조회
+		String selectNextOrderId = "select ifnull(max(order_id),0)+1 from tb_order ";
+				
+		int nextOrderId = 0;
+		
+		try {
+			this.pstmt = con.prepareStatement(selectNextOrderId);
+			// Query를 수행 (조회)
+			this.rs = this.pstmt.executeQuery();
+			// 조회 결과 수가 하나임
+			if (rs.next()) {
+				//order_id 값 구하기
+				nextOrderId = rs.getInt(1);
+			}
+			
+			//임시
+			if ( nextOrderId == 0) nextOrderId = 1;
+			
+			this.pstmt = con.prepareStatement(insertOrderSql);
+			this.pstmt.setInt(1, nextOrderId);
+			this.pstmt.setInt(2, orderDto.getOrderSum());
+			// CUD 작업 -> Update 수행
+			this.pstmt.executeUpdate();
+			
+			// 한 사람이 주문한 주문 내역 가져오기
+			List<OrderDetailDTO> orderDetailList = orderDto.getOrderDetailList();
+			
+			this.pstmt = con.prepareStatement(insertOrderDetailSql);
+			for ( OrderDetailDTO orderDetailDto : orderDetailList ) {
+				
+				this.pstmt.setInt(1, orderDetailDto.getMenuId());
+				this.pstmt.setInt(2, nextOrderId);
+				this.pstmt.setInt(3, orderDetailDto.getOrderAmount());
+				this.pstmt.setString(4, orderDetailDto.getOrderBreadSize());
+				this.pstmt.setString(5, orderDetailDto.getOrderBreadKind());
+				this.pstmt.setString(6, orderDetailDto.getOrderExceptVeg());
+				this.pstmt.setString(7, orderDetailDto.getOrderCheese());
+				this.pstmt.setString(8, orderDetailDto.getOrderSauce());
+				
+				this.pstmt.executeUpdate();
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(this.pstmt != null) {
+				try {
+					this.pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				this.pstmt = null;
+			}
+			if(this.rs != null) {
+				try {
+					this.rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				this.rs = null;
+			}
+		}
+		
+		
 	}
 	
 	//메뉴 수정하는 작업
@@ -58,7 +126,7 @@ public class OrderDAO {
 		//MenuDTO를 담을 공간 준비
 		List<MenuDTO> menuList =  new ArrayList<>();
 		
-		String sql = "select * from menu where menu_category = ?";
+		String sql = "select * from tb_menu where menu_category = ?";
 		try {
 			this.pstmt = con.prepareStatement(sql);
 			this.pstmt.setString(1, category);
