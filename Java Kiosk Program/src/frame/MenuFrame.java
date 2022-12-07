@@ -1,13 +1,10 @@
 package frame;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.GridLayout;
 import java.awt.ScrollPane;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -22,97 +19,109 @@ import dto.MenuDTO;
 import dto.OrderDTO;
 import menu.MenuDetailPanel;
 
-public class MenuFrame extends JFrame implements WindowListener{
+/**
+ * 메뉴를 카테고리별로 tab으로 보여주는 화면
+ * @author USER
+ *
+ */
+public class MenuFrame extends JFrame {
 	
 	//버튼
 	JButton btnNext = new JButton("다음으로");
-	JButton homeBtn = new JButton("홈으로");
+	JButton btnHome = new JButton("홈으로");
 	
 	//Tabbed Panes 사용하기
 	JTabbedPane tabbedPane = new JTabbedPane();
 	
 	//패널 생성
-	JPanel categoryPanel = new JPanel();//classic, freshLight, premium 버튼이 나타날 패널
-	JPanel menuListPanel = new JPanel();//주문할 메뉴들을 추가할 패널
-	JPanel menuOrderPanel = new JPanel();//주문 버튼을 추가할 패널
+	JPanel pnCategory = new JPanel();//classic, freshLight, premium 버튼이 나타날 패널
+	JPanel pnMenuList = new JPanel();//주문할 메뉴들을 추가할 패널
+	JPanel pnMenuOrder = new JPanel();//주문 버튼을 추가할 패널
 	
-	//all, classic, freshLight, premium 메뉴들의 cardLayout 패널 생성
-	JPanel aPanel = new JPanel();//All
-	JPanel cPanel = new JPanel();//classic
-	JPanel fPanel = new JPanel();//freshLight
-	JPanel pPanel = new JPanel();//premium
+	JPanel pnA = new JPanel();//All
+	JPanel pnC = new JPanel();//classic
+	JPanel pnF = new JPanel();//freshLight
+	JPanel pnP = new JPanel();//premium
 	
 	MenuDAO menuDao = new MenuDAO();
+	OrderDTO orderDto = new OrderDTO();
 	
 	KioskStartFrame kioskStartFrame;
-	
-	OrderDTO orderDto = new OrderDTO();
 	
 	public MenuFrame(KioskStartFrame kioskStartFrame) {
 		this.kioskStartFrame = kioskStartFrame;
 		
 		this.setSize(656,820);
-		this.setLocation(200,0);
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);//x버튼 눌러도 이 화면이 사라지지 않도록
-		this.addWindowListener(this);
-		this.setResizable(false);//사용자가 크기 변경 불가
-		this.setVisible(true);
+		this.setResizable(false);
 		this.setTitle("메뉴 선택");
+		this.setLocation(200,0);
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int result = CommonUtil.infoMsg(MenuFrame.this, "종료하시겠습니까?", "프로그램 종료 확인");
+				if ( result == JOptionPane.OK_OPTION ) {
+					CommonUtil.programExit();
+				}
+			}
+		});
 		
 		//각 패널에 그리드 레이아웃 적용
-		aPanel.setLayout(new GridLayout(6,3));
-		cPanel.setLayout(new GridLayout(2,3));
-		fPanel.setLayout(new GridLayout(2,3));
-		pPanel.setLayout(new GridLayout(2,3));
+		pnA.setLayout(new GridLayout(6,3));
+		pnC.setLayout(new GridLayout(2,3));
+		pnF.setLayout(new GridLayout(2,3));
+		pnP.setLayout(new GridLayout(2,3));
 		
 		//주문 버튼 BorderLayout의 남쪽에 놓기
-		menuOrderPanel.add(homeBtn);
+		pnMenuOrder.add(btnHome);
 		
-		homeBtn.addActionListener(e -> {
-			MenuFrame.this.setVisible(false);
+		btnHome.addActionListener(e -> {
+			this.setVisible(false);
 			kioskStartFrame.setVisible(true);
 		});
 		
 		//orderBtn버튼을 menuOrderPanel에 더하기
-		menuOrderPanel.add(btnNext);
+		pnMenuOrder.add(btnNext);
 		
 		//각각 cPanel, fPanel, pPanel에 메뉴 정보 넣기
 		
-		setUpPanel(cPanel, "classic");
-		setUpPanel(fPanel, "freshLight");
-		setUpPanel(pPanel, "premium");
+		setUpPanel(pnC, "classic");
+		setUpPanel(pnF, "freshLight");
+		setUpPanel(pnP, "premium");
 		
 		//다음으로 버튼 btnOrder을 누르면 발생하는 이벤트
 		btnNext.addActionListener(e -> {
-			new OrderFrame(MenuFrame.this, orderDto);
-			MenuFrame.this.setVisible(false);
+			new OrderFrame(this, orderDto);
+			this.setVisible(false);
 		});
 		
 		//스크롤바 생성
 		//각 패널을 TabbedPane에 넣기
-		scrollPaneTabbedPane(aPanel, "All");
-		scrollPaneTabbedPane(cPanel, "Classic");
-		scrollPaneTabbedPane(fPanel, "FreshLight");
-		scrollPaneTabbedPane(pPanel, "Premium");
+		addTabbedPane(pnA, "All");
+		addTabbedPane(pnC, "Classic");
+		addTabbedPane(pnF, "FreshLight");
+		addTabbedPane(pnP, "Premium");
 		
 		//전체 패널 담기
 		add(tabbedPane, BorderLayout.CENTER);
-		add(menuOrderPanel, BorderLayout.SOUTH);
+		add(pnMenuOrder, BorderLayout.SOUTH);
+
+		this.setVisible(true);
 	}
 	
 	//스크롤바를 생성하고 각 패널을 TabbedPane에 넣기
-	public void scrollPaneTabbedPane(JPanel panel, String category) {
+	public void addTabbedPane(JPanel panel, String category) {
 		ScrollPane sp = new ScrollPane();
 		sp.add(panel);
 		tabbedPane.addTab(category, sp);
 	}
 	
 	//메뉴 정보 aPanel과 해당 패널에 넣기
-	public void makePanel(JPanel panel, MenuDTO menuVo) {
-		aPanel.add(new MenuDetailPanel(menuVo, orderDto));
-		panel.add(new MenuDetailPanel(menuVo, orderDto));
+	public void makePanel(JPanel panel, MenuDTO menuDto) {
+		pnA.add(new MenuDetailPanel(menuDto, orderDto));
+		panel.add(new MenuDetailPanel(menuDto, orderDto));
 	}
 	
+	//주어진 카테고리에 맞는 패널 생성
 	private void setUpPanel(JPanel panel, String pMenuCategory) {
 		
 		List<MenuDTO> menuList = menuDao.getMenuListByCategory(pMenuCategory);
@@ -122,43 +131,5 @@ public class MenuFrame extends JFrame implements WindowListener{
 			}
 		}
 	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		System.out.println("windowclosing");
-		int result = JOptionPane.showConfirmDialog(this, "종료하시겠습니까?", "프로그램 종료 확인", JOptionPane.OK_CANCEL_OPTION);
-		if ( result == JOptionPane.OK_OPTION ) {
-			CommonUtil.programExit();
-		}
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		System.out.println("windowClosed");
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		
-	}
+	
 }

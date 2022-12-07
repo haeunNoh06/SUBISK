@@ -23,16 +23,18 @@ import dto.OrderDetailDTO;
 
 public class ManagerFrame extends JFrame {
 
-   JPanel orderListPanel = new JPanel(new BorderLayout());//상품명, 수량, 가격을 나타낼 패널
+   JPanel pnOrderList = new JPanel(new BorderLayout());//상품명, 수량, 가격을 나타낼 패널
    DefaultTableModel dtm;
-   JTable listTable;
+   JTable tbOrderList;
    int lastRowCount = 0;
 
    public ManagerFrame() {
       
-      this.setLocationRelativeTo(null);            //실행화면 위치 : 중간
-      this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-      this.setTitle("매니저 화면");               //프레임 제목
+	  this.setSize(656, 500);								       
+	  this.setResizable(false);
+	  this.setTitle("매니저 화면");              
+      this.setLocation(845,150);
+      this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       
       //header : 분류
       String[] header = {"주문 번호","상품명","수량","옵션 정보"};
@@ -40,46 +42,39 @@ public class ManagerFrame extends JFrame {
       dtm = new DefaultTableModel(header, 0);
       
       //orderListPanel의 table생성
-      listTable = new JTable(dtm){
+      tbOrderList = new JTable(dtm){
          @Override
-         //데이터가 수정 가능하냐 마냐
          public boolean isCellEditable(int row, int column) {
-            //false를 리턴하게 되면 수정 불가능
-            //return column == 0;으로 하면 번호는 수정 가능하게 됨
-            return column == 3;
+            return false;
          }
       };
-      listTable.getColumnModel().getColumn(3).setCellRenderer(new TableCell());
-      listTable.getColumnModel().getColumn(3).setCellEditor(new TableCell());
-      listTable.setRowHeight(90);
+      
+      tbOrderList.getColumnModel().getColumn(3).setCellRenderer(new TableCell());
+      tbOrderList.setRowHeight(90);
       
       int[] widthList = {65,130,30,430};
       
       //중간으로 정렬
-      var centerAlignRenderer = new DefaultTableCellRenderer();
-      //중간으로 적용할 속성을 renderer에 적용(적용뿐만 아니라 각 속성에 이 중앙정렬을 세팅해줘야 함)
+      DefaultTableCellRenderer centerAlignRenderer = new DefaultTableCellRenderer();
       centerAlignRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-      //중앙정렬의 속성을 가진 renderer을 세팅
+
       for ( int i = 0; i < header.length-1; i++) {
-         listTable.getColumnModel().getColumn(i).setCellRenderer(centerAlignRenderer);
+         tbOrderList.getColumnModel().getColumn(i).setCellRenderer(centerAlignRenderer);
       }
       
       for ( int i = 0; i < widthList.length; i++){
-         listTable.getColumnModel().getColumn(i).setPreferredWidth(widthList[i]);
+         tbOrderList.getColumnModel().getColumn(i).setPreferredWidth(widthList[i]);
       }
       
-      //listTable의 스크롤 생성, Scroll이 listTable에서 가능하도록 한다. 
-      JScrollPane menuListScroll = new JScrollPane(listTable);
+      JScrollPane menuListScroll = new JScrollPane(tbOrderList);
       
-      //orderListPanel에 Scroll이 가능한 listTable을 넣는다
-      orderListPanel.add(menuListScroll, "Center");
-      this.add(orderListPanel);
-      this.setSize(656, 500);								//Frame 크기 가로 636, 세로 820                   
-      this.setResizable(false);
-      this.setLocation(845,150);
-      this.setVisible(true);                     //프레임 활성화
+      pnOrderList.add(menuListScroll, "Center");
+     
+      this.setVisible(true);                    
       
    }
+   
+   //ManagerFrame의 테이블에 주문 목록 추가
    public void addOrder(OrderDTO orderDto) {
 	   //OrderDTO로부터 orderDetailList를 가져온다.
 	   List<OrderDetailDTO> orderDetailList = null;
@@ -90,32 +85,32 @@ public class ManagerFrame extends JFrame {
 		   orderDetailList = new ArrayList<>();
 	   }
 	   
-	   //orderDetailList의 개수가 JTable의 rowcount가 된다.
-      //추가할 주문 목록 개수
+       //추가할 주문 목록 개수
 	   int rowCount = orderDetailList.size();
 	   
 	   dtm.setRowCount(rowCount+lastRowCount);
 	   
-      //고쳐야 될 부분
-      //리스트 안에 들어있느 ㄴ목록 중에서 i에 해당하는 인덱스에 들어있는 값을 꺼내와라
+      //리스트 안에 들어있는 목록 중에서 i에 해당하는 인덱스에 들어있는 값을 꺼내와라
 	   for(int i = 0; i < rowCount; i++) {
 		   OrderDetailDTO orderDetailDto = orderDetailList.get(i);
 		   String menuName = orderDetailDto.getMenuDto().getMenuName();
 		   int orderAmount = orderDetailDto.getOrderAmount();
 		   String orderOption = orderDetailDto.getOptionAll();
 		   
-		   dtm.setValueAt(OrderFrame.orderCnt, i+lastRowCount, 0);//주문번호
-		   System.out.println("ManagerFrame에서 주문번호 세팅합니다");
-		   dtm.setValueAt(menuName, i+lastRowCount, 1);					//메뉴이름
-		   dtm.setValueAt(Integer.valueOf(orderAmount), i+lastRowCount, 2);//주문수량
-		   dtm.setValueAt(orderOption, i+lastRowCount, 3);				//주문옵션
+		   dtm.setValueAt(OrderFrame.orderNum, i+lastRowCount, 0);			//주문번호
+		   dtm.setValueAt(menuName, i+lastRowCount, 1);						//메뉴이름
+		   dtm.setValueAt(Integer.valueOf(orderAmount), i+lastRowCount, 2); //주문수량
+		   dtm.setValueAt(orderOption, i+lastRowCount, 3);					//주문옵션
 	   }
 	   //전체 JTable의 row수 업데이트
 	   lastRowCount += rowCount;
 	   
+	   this.add(pnOrderList);
+	   this.revalidate();//x y 크기나 위치 재조정
+	   this.repaint();//그 위치에 맞게 다시 그림
    }
    
-	class TableCell extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
+	class TableCell extends AbstractCellEditor implements TableCellRenderer {
         JTextArea jb;
  
         public TableCell() {
@@ -133,13 +128,5 @@ public class ManagerFrame extends JFrame {
         	jb.setText(value.toString());
             return jb;
         }
- 
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-                int column) {
-        	jb.setText(value.toString());
-            return jb;
-        }
     }
-   
 }

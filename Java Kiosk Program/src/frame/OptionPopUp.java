@@ -25,36 +25,36 @@ import dto.OrderDTO;
 import dto.OrderDetailDTO;
 import menu.MenuDetailPanel;
 
-public class OptionPopUp extends JFrame implements ActionListener {
+public class OptionPopUp extends JFrame {
 	
 	//빵 길이
-	JRadioButton raWidth15 = new JRadioButton("15cm");
-	JRadioButton raWidth30 = new JRadioButton("30cm");
+	JRadioButton rbWidth15 = new JRadioButton("15cm");
+	JRadioButton rbWidth30 = new JRadioButton("30cm");
 	//버튼 그룹
 	ButtonGroup btnGrpWidth = new ButtonGroup();
 	//빵 종류
-	String[] breadStrings = new String[]{"","허니오트", "하티", "위트", "파마산 오레가노", "화이트", "플랫브레드"};
-	JComboBox cbBreads = new JComboBox(breadStrings);
+	String [] breadLists = {"","허니오트","하티","위트","파마산 오레가노","화이트","플랫브레드"};
+	JComboBox cbBreads = new JComboBox(breadLists);
 	//치즈 종류
-	String[] cheeseStrings = new String[] {"","아메리칸 치즈", "슈레드 치즈", "모차렐라 치즈"};
-	JComboBox cbCheeses = new JComboBox(cheeseStrings);
+	String [] cheeseLists = {"","아메리칸 치즈","슈레드 치즈","모차렐라 치즈"};
+	JComboBox cbCheeses = new JComboBox(cheeseLists);
 	//뺄 야채
-	String[] vegStrings = new String[] {"","양상추", "토마토", "오이", "피망", "양파", "피클", "올리브", "할라피뇨", "아보카도"};
-	JList<String> vegList = new JList<String>(vegStrings);
+	String [] vegLists = {"뺄 야채 없음","양상추","토마토","오이","피망","양파","피클","올리브","할라피뇨","아보카도"};
+	JList<String> vegList = new JList<String>(vegLists);
 	//소스 종류
-	String[] sauceStrings = new String[] {"","랜치", "마요네즈", "스위트 어니언", "허니 머스타드", "스위트 칠리", "핫 칠리", "사우스웨스트 치폴레", "머스타드", "홀스래디쉬", "올리브 오일", "레드와인식초", "소금", "후추", "스모크 바비큐"};
-	JList<String> sauceList = new JList<String>(sauceStrings);
+	String [] sauceLists = {"","랜치","마요네즈","스위트 어니언","허니 머스타드","스위트 칠리","핫 칠리","사우스웨스트 치폴레","머스타드","홀스래디쉬","올리브 오일","레드와인식초","소금","후추","스모크 바비큐"};
+	JList<String> sauceList = new JList<String>(sauceLists);
 	
 	//스크롤패인
 	JScrollPane scrVegOut = new JScrollPane(vegList);
 	JScrollPane scrSauce = new JScrollPane(sauceList);
 	
 	//라벨
-	JLabel laBreadWidth= new JLabel("빵 길이");
-	JLabel laBreadKind = new JLabel("빵 종류");
-	JLabel laVegOut = new JLabel("빼는 야채");
-	JLabel laCheeseKind = new JLabel("치즈 종류");
-	JLabel laSauceKind = new JLabel("소스 종류");
+	JLabel lbBreadWidth= new JLabel("빵 길이");
+	JLabel lbBreadKind = new JLabel("빵 종류");
+	JLabel lbVegOut = new JLabel("빼는 야채");
+	JLabel lbCheeseKind = new JLabel("치즈 종류");
+	JLabel lbSauceKind = new JLabel("소스 종류");
 	
 	//버튼 
 	JButton btnInit = new JButton("초기화");
@@ -62,12 +62,11 @@ public class OptionPopUp extends JFrame implements ActionListener {
 
 	//안내 텍스트
 	String text = "";
-	//라디오 버튼 눌러진거 확인
-	String raWidthSelect = "15cm";	//초기값
-	String cbBreadKind;
-	String liVegSelect;
-	String cbCheeseKind;
-	String liSauceSelect;
+	String breadWidth = "15cm";	
+	String breadKind;
+	String vegExcept;
+	String cheeseKind;
+	String sauceSelect;
 	
 	MenuDetailPanel menuDetailPanel;
 	
@@ -77,17 +76,17 @@ public class OptionPopUp extends JFrame implements ActionListener {
 	}
 	
 	public void setUpUI() {
+		
 		 this.setSize(500,550);
-		 this.setLocation(275,140);
-		 this.setVisible(true);
-		 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);//x버튼 누르면 자원 회수
-		 this.setTitle("옵션 선택");
 		 this.setResizable(false);
+		 this.setTitle("옵션 선택");
 		 this.setLayout(null);
+		 this.setLocation(275,140);
+		 this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		 
 		 //버튼 그룹
-		 btnGrpWidth.add(raWidth15);
-		 btnGrpWidth.add(raWidth30);
+		 btnGrpWidth.add(rbWidth15);
+		 btnGrpWidth.add(rbWidth30);
 		 
 		 //버튼 위치 지정
 		 btnInit.setBounds(130, 440, 90, 24);
@@ -96,24 +95,24 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 this.add(btnComplete);
 		 
 		 //라벨 위치 지정
-		 laBreadWidth.setBounds(90, 5, 100, 100);
-		 laBreadKind.setBounds(90, 55, 100, 100);
-		 laVegOut.setBounds(90, 100, 100, 100);
-		 laCheeseKind.setBounds(90, 213, 100, 100);
-		 laSauceKind.setBounds(90, 265, 100, 100);
-		 this.add(laBreadWidth);
-		 this.add(laBreadKind);
-		 this.add(laVegOut);
-		 this.add(laCheeseKind);
-		 this.add(laSauceKind);
+		 lbBreadWidth.setBounds(90, 5, 100, 100);
+		 lbBreadKind.setBounds(90, 55, 100, 100);
+		 lbVegOut.setBounds(90, 100, 100, 100);
+		 lbCheeseKind.setBounds(90, 213, 100, 100);
+		 lbSauceKind.setBounds(90, 265, 100, 100);
+		 this.add(lbBreadWidth);
+		 this.add(lbBreadKind);
+		 this.add(lbVegOut);
+		 this.add(lbCheeseKind);
+		 this.add(lbSauceKind);
 		 
 		 //라디오 버튼 위치 지정
-		 raWidth15.setBounds(210, 40, 80, 30);
-		 raWidth30.setBounds(310, 40, 80, 30);
-		 this.add(raWidth15);
-		 this.add(raWidth30);
-		 //15cm버튼이 체크되어있음
-		 raWidth15.setSelected(true);
+		 rbWidth15.setBounds(210, 40, 80, 30);
+		 rbWidth30.setBounds(310, 40, 80, 30);
+		 this.add(rbWidth15);
+		 this.add(rbWidth30);
+		 
+		 rbWidth15.setSelected(true);//15cm 체크
 		 
 		 //콤보 박스 위치 지정
 		 cbBreads.setBounds(210, 90, 170, 30);
@@ -128,33 +127,26 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 this.add(scrSauce);
 		 
 		 //폰트 적용
-		 Font font = new Font("맑은 고딕", Font.BOLD, 15);
-		 
-		 laBreadWidth.setFont(font);
-		 laBreadKind.setFont(font);
-		 laVegOut.setFont(font);
-		 laCheeseKind.setFont(font);
-		 laSauceKind.setFont(font);
-		 
-		 //JList 다중 선택 모드
-		 vegList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		 sauceList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		 lbBreadWidth.setFont(CommonUtil.font1);
+		 lbBreadKind.setFont(CommonUtil.font1);
+		 lbVegOut.setFont(CommonUtil.font1);
+		 lbCheeseKind.setFont(CommonUtil.font1);
+		 lbSauceKind.setFont(CommonUtil.font1);
 		 
 		 //라디오 선택 여부
-		 raWidth15.addActionListener(e -> {
-			raWidthSelect = "";
-			raWidthSelect = raWidth15.getText();
+		 rbWidth15.addActionListener(e -> {
+			breadWidth = "";
+			breadWidth = rbWidth15.getText();
 		 });
-		 raWidth30.addActionListener(e -> {
-			 raWidthSelect = "";
-			 raWidthSelect = raWidth30.getText();
+		 rbWidth30.addActionListener(e -> {
+			 breadWidth = "";
+			 breadWidth = rbWidth30.getText();
 		 });
 		 
 		 //빵 선택
 		 cbBreads.addActionListener(e -> {
-			if ( cbBreads.getSelectedIndex() == 0 ) return;
-			cbBreadKind = "";
-			cbBreadKind = cbBreads.getSelectedItem()+"";
+			breadKind = "";
+			breadKind = cbBreads.getSelectedItem()+"";
 		 });
 		 
 		 
@@ -162,39 +154,36 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 vegList.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				//선택한게 없다면 "선택되었습니다." 메시지 보이지 않게 return하기
-				if ( vegList.getSelectedIndex() == 0) return;
 				List<String> list = vegList.getSelectedValuesList();
-				liVegSelect = "";										//선택한 야채
-				int cnt = 0;	//0번째로 들어온 값이 아닌 것은 ,를 붙이지 않는다.
-				for ( String vegiStr : list ) {								//list에 있는 야채를 selectVeg에 더해 붙이기
+				vegExcept = "";										
+				int cnt = 0;	
+				//0번째로 들어온 값이 아닌 것은 ,를 붙이지 않는다.
+				for ( String vegiStr : list ) {								
 					cnt++;
-					if (cnt != 1) liVegSelect += ", ";
-					liVegSelect += vegiStr;
+					if (cnt != 1) vegExcept += ", ";
+					vegExcept += vegiStr;
 				}
 			}
 		 });
 		 
 		 //치즈 선택
 		 cbCheeses.addActionListener( e -> {
-			 if ( cbCheeses.getSelectedIndex() == 0 ) return;
-			 cbCheeseKind = "";
-			 cbCheeseKind = cbCheeses.getSelectedItem()+"";
+			 cheeseKind = "";
+			 cheeseKind = cbCheeses.getSelectedItem()+"";
 		 });
 		 
 		 //소스 리스트 안내 문구
 		 sauceList.addListSelectionListener(new ListSelectionListener() {
 			 @Override
 			 public void valueChanged(ListSelectionEvent e) {
-				 //선택한게 없다면 "선택되었습니다." 메시지 보이지 않게 return하기
-				 if ( sauceList.getSelectedIndex() == 0) return;
 				 List<String> list = sauceList.getSelectedValuesList();
-				 liSauceSelect = "";									//선택한 소스
-				 int cnt = 0;	//0번째로 들어온 값이 아닌 것은 ,를 붙이지 않는다.
-				 for ( String sauceStr : list ) {							//list에 있는 소스를 selectSauce에 더해 붙이기
+				 sauceSelect = "";									
+				 int cnt = 0;	
+				//0번째로 들어온 값이 아닌 것은 ,를 붙이지 않는다.
+				 for ( String sauceStr : list ) {							
 					 cnt++;
-					 if (cnt != 1) liSauceSelect += ", ";
-					 liSauceSelect += sauceStr;
+					 if (cnt != 1) sauceSelect += ", ";
+					 sauceSelect += sauceStr;
 				 }
 			 }
 		 });
@@ -205,12 +194,11 @@ public class OptionPopUp extends JFrame implements ActionListener {
 					|| cbCheeses.getSelectedIndex() == 0
 					|| vegList.isSelectionEmpty() == true
 					|| sauceList.isSelectionEmpty() == true) {
-				errorMsg("빈칸이 존재합니다");
+				CommonUtil.errMsg(this, "빈칸이 존재합니다");
 				return;
 			} 
-			//getSelectedItem : 콤보박스로부터 선택항목 가져오기
-			text += raWidthSelect+"\n"+cbBreadKind+"\n"+liVegSelect+"\n"+cbCheeseKind+"\n"+liSauceSelect+"\n";
-			CommonUtil.infoMsg(text+"선택이 완료되었습니다.");
+			text += breadWidth+"\n"+breadKind+"\n"+vegExcept+"\n"+cheeseKind+"\n"+sauceSelect+"\n";
+			CommonUtil.infoMsg(this, text+"선택이 완료되었습니다.");
 			text = "";
 				
 			//주문 상세 작성
@@ -220,11 +208,11 @@ public class OptionPopUp extends JFrame implements ActionListener {
 			OrderDetailDTO orderDetailDto = new OrderDetailDTO();
 			orderDetailDto.setMenuId(menuDto.getMenuId());
 			orderDetailDto.setMenuDto(menuDto);
-			orderDetailDto.setOrderBreadSize(raWidthSelect);
-			orderDetailDto.setOrderBreadKind(cbBreadKind);
-			orderDetailDto.setOrderExceptVeg(liVegSelect);
-			orderDetailDto.setOrderCheese(cbCheeseKind);
-			orderDetailDto.setOrderSauce(liSauceSelect);
+			orderDetailDto.setOrderBreadSize(breadWidth);
+			orderDetailDto.setOrderBreadKind(breadKind);
+			orderDetailDto.setOrderExceptVeg(vegExcept);
+			orderDetailDto.setOrderCheese(cheeseKind);
+			orderDetailDto.setOrderSauce(sauceSelect);
 				
 			//수량 정보 가져오기
 			JTextField tfCount = menuDetailPanel.getCount();
@@ -239,21 +227,14 @@ public class OptionPopUp extends JFrame implements ActionListener {
 		 
 		//초기화 버튼눌러서 초기화하기
 		btnInit.addActionListener(e -> {
-			raWidth15.setSelected(true);
+			rbWidth15.setSelected(true);
 			cbBreads.setSelectedIndex(0);
 			cbCheeses.setSelectedIndex(0);
 			vegList.setSelectedIndex(0);
 			sauceList.setSelectedIndex(0);
 		});
-	}
-	
-	public void errorMsg(String msg) {
-		JOptionPane.showMessageDialog(null, msg, "경고", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
 
+		this.setVisible(true);
+	}
+	
 }

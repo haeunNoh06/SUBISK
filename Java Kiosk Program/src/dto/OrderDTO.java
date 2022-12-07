@@ -12,15 +12,7 @@ public class OrderDTO {
 	//tb_order_detail
 	private List<OrderDetailDTO> orderDetailList;
 	
-	public List<OrderDetailDTO> getOrderDetailList() {
-		if ( orderDetailList == null) {
-			orderDetailList = new ArrayList<>();
-		}
-		return orderDetailList;
-	}
-	public void setOrderDetailList(List<OrderDetailDTO> orderDetailList) {
-		this.orderDetailList = orderDetailList;
-	}
+
 	public OrderDTO() {
 		
 	}
@@ -32,10 +24,19 @@ public class OrderDTO {
 	}
 	//자동으로 현재 시간값 저장됨
 	public OrderDTO(int orderId, int orderSum) {
-		this.orderId = orderId;
-		this.orderSum = orderSum;
-		this.orderDate = new Date(System.currentTimeMillis());
+		this(orderId,orderSum,new Date(System.currentTimeMillis()));
 	}
+
+	public List<OrderDetailDTO> getOrderDetailList() {
+		if ( orderDetailList == null) {
+			orderDetailList = new ArrayList<>();
+		}
+		return orderDetailList;
+	}
+	public void setOrderDetailList(List<OrderDetailDTO> orderDetailList) {
+		this.orderDetailList = orderDetailList;
+	}
+	
 	public int getOrderId() {
 		return orderId;
 	}
@@ -54,6 +55,4 @@ public class OrderDTO {
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
-	
-	
 }

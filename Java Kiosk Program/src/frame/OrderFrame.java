@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.Calendar;
@@ -30,36 +31,33 @@ import common.CommonUtil;
 import dto.OrderDTO;
 import dto.OrderDetailDTO;
 
-public class OrderFrame extends JFrame implements WindowListener{
+public class OrderFrame extends JFrame {
 
-	//주문 시간
-	public static long lastOrderTime;
+	public static long lastOrderTime;//주문 시간
 	
-	//주문 완료 횟수
-	public static int orderCnt = 0;
+	public static int orderNum = 0;//주문 번호
 	
-	//총 합계
-	private int orderSum = 0;						
+	private int orderSum = 0;//총 합계 금액					
 
 	MenuFrame menuFrame;
 	OrderDTO orderDto;
 
 	//라벨 선언
-	JLabel sumLabel = new JLabel("총 결제 금액"); 		//총 결제 금액 라벨
-	JLabel wonLabel = new JLabel("원");				//xxxx원 라벨
+	JLabel lbSum = new JLabel("총 결제 금액"); 		//총 결제 금액 라벨
+	JLabel lbWon = new JLabel("원");				//xxxx원 라벨
 	
 	//텍스트 필드 선언
-	JTextField sumTxt = new JTextField(6);  //총 결제 금액을 나타낼 textField
+	JTextField tfSum = new JTextField(6);  //총 결제 금액을 나타낼 textField
 	
 	//버튼 선언
-	JButton orderFinBtn = new JButton("결제 방식 선택");	//결제 방식 선택 버튼
-	JButton preBtn = new JButton("이전으로");
+	JButton btnOrderFin = new JButton("결제 방식 선택");	//결제 방식 선택 버튼
+	JButton btnPre = new JButton("이전으로");
 	
 	//패널 선언
-	JPanel orderListPanel = new JPanel(new BorderLayout());	//상품명, 수량, 가격을 나타낼 패널
-	JPanel orderSumPanel = new JPanel();					//총 결제 금액을 나타낼 패널
-	JPanel btnPanel = new JPanel();							//이전으로 버튼과 주문 완료 버튼 추가할 패널
-	JPanel orderEndPanel = new JPanel(new GridLayout(2,1));	//주문의 마지막부분(총 결제 금액,주문완료 버튼)을 담당할 부분을 나타낼 패널
+	JPanel pnOrder = new JPanel(new BorderLayout());		//상품명, 수량, 가격을 나타낼 패널
+	JPanel pnOrderSum = new JPanel();					//총 결제 금액을 나타낼 패널
+	JPanel pnBtn = new JPanel();							//이전으로 버튼과 주문 완료 버튼 추가할 패널
+	JPanel pnOrderEnd = new JPanel(new GridLayout(2,1));	//주문의 마지막부분(총 결제 금액,주문완료 버튼)을 담당할 부분을 나타낼 패널
 	
 	public OrderFrame(MenuFrame menuFrame, OrderDTO orderDto) {
 		
@@ -67,30 +65,31 @@ public class OrderFrame extends JFrame implements WindowListener{
 		this.orderDto = orderDto;
 		
 		//기본 세팅
-		this.setSize(636, 820);								//Frame 크기 가로 636, 세로 820
-		this.setLocation(200,0);
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);		//프로그램 정상 종료
-		this.setTitle("주문확인");								//프레임 제목
+		this.setSize(636, 820);							
 		this.setResizable(false);
-		this.setVisible(true);								//프레임 활성화
-		this.setLayout(new BorderLayout()); 					//BorderLayout을 OrderFrame에 세팅
-		
+		this.setTitle("주문확인");								
+		this.setLocation(200,0);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
 		
 		//폰트 설정
-		sumLabel.setFont(CommonUtil.font1);
-		wonLabel.setFont(CommonUtil.font2);
+		lbSum.setFont(CommonUtil.font2);
+		lbWon.setFont(CommonUtil.font1);
 		
-		sumTxt.setEditable(false); 				//사용자가 임의로 텍스트를 입력할 수 없음
+		tfSum.setEditable(false); 				//사용자가 임의로 텍스트를 입력할 수 없음
 		
-		
-		this.addWindowListener(this);
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				menuFrame.setVisible(true);
+			}
+		});
 		
 		//이전 버튼 추가
-		btnPanel.add(preBtn);
-		btnPanel.add(orderFinBtn);
+		pnBtn.add(btnPre);
+		pnBtn.add(btnOrderFin);
 		
-		orderListPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK)));
-		orderSumPanel.setBorder(new TitledBorder(new LineBorder(Color.BLACK)));
+		pnOrder.setBorder(new TitledBorder(new LineBorder(Color.BLACK)));
+		pnOrderSum.setBorder(new TitledBorder(new LineBorder(Color.BLACK)));
 		
 		
 		//header : 분류
@@ -103,7 +102,6 @@ public class OrderFrame extends JFrame implements WindowListener{
 		//orderDetailList의 개수가 JTable의 rowcount가 된다.
 		int rowCount = orderDetailList.size();
 		
-		//
 		DefaultTableModel dtm = new DefaultTableModel(header, rowCount);
 		
 		for(int i = 0; i < rowCount; i++) {
@@ -128,16 +126,13 @@ public class OrderFrame extends JFrame implements WindowListener{
 		//orderListPanel의 table생성
 		JTable listTable = new JTable(dtm){
 			@Override
-			//데이터가 수정 가능하냐 마냐
 			public boolean isCellEditable(int row, int column) {
 				//false를 리턴하게 되면 수정 불가능
-				//return column == 0;으로 하면 번호는 수정 가능하게 됨
 				return false;
 			}
 		};
 		
 		listTable.getColumnModel().getColumn(3).setCellRenderer(new TableCell());
-		listTable.getColumnModel().getColumn(3).setCellEditor(new TableCell());
 		listTable.setRowHeight(90);
 		
 		int[] widthList = {70,1,30,300};
@@ -156,82 +151,48 @@ public class OrderFrame extends JFrame implements WindowListener{
 		}
 		
 		//이전으로 버튼을 누르면 이전의 화면으로 이동
-		preBtn.addActionListener(e -> {
+		btnPre.addActionListener(e -> {
 			
 			menuFrame.setVisible(true);
-			OrderFrame.this.setVisible(false);
+			this.setVisible(false);
 		});
 		
 		//주문 완료 버튼을 누르면 주문이 완료되었습니다. 메시지 나옴
-		orderFinBtn.addActionListener(e -> {
+		btnOrderFin.addActionListener(e -> {
 			if ( rowCount == 0 ) {
-				CommonUtil.errMsg("주문을 해주세요.");//주문을 하지 않았을 경우 경고메시지
+				CommonUtil.errMsg(this,"주문을 해주세요.");//주문을 하지 않았을 경우 경고메시지
 				return;
 			}
-			lastOrderTime = System.currentTimeMillis();
-			new PaymentSelect(orderSum, OrderFrame.this);
+			//결제 방식 선택
+			new PaymentSelect(orderSum, this);
 		});
 
-		//listTable의 스크롤 생성, Scroll이 listTable에서 가능하도록 한다. 
+		//listTable의 스크롤 생성
 		JScrollPane menuListScroll = new JScrollPane(listTable);
 		
-		//문자열로 변환한 총 합계를 sumTxt에 넣기
-		sumTxt.setText(String.format("%,d", orderSum));
-		//합계는 textField의 중간에 표시되게 한다.
-		sumTxt.setHorizontalAlignment(JTextField.CENTER);
+		tfSum.setText(String.format("%,d", orderSum));  //총 금액 tfSum에 넣기
+		tfSum.setHorizontalAlignment(JTextField.CENTER);//총 금액 중간 정렬
 		
 		//orderListPanel에 Scroll이 가능한 listTable을 넣는다
-		orderListPanel.add(menuListScroll, "Center");
-		orderListPanel.add(orderSumPanel, "South");
+		pnOrder.add(menuListScroll, "Center");
+		pnOrder.add(pnOrderSum, "South");
 		
 		//총 결제 금액 sumTxt 원 - 보여주기
-		orderSumPanel.add(sumLabel);
-		orderSumPanel.add(sumTxt);
-		orderSumPanel.add(wonLabel);
+		pnOrderSum.add(lbSum);
+		pnOrderSum.add(tfSum);
+		pnOrderSum.add(lbWon);
 		
-		orderEndPanel.add(orderSumPanel);		//총 가격을 나타내는 패널을 orderrEndPanel에 추가
-		orderEndPanel.add(btnPanel);			//주문 완료 버튼을 orderEndPanel에 추가
+		pnOrderEnd.add(pnOrderSum);		//총 가격을 나타내는 패널을 pnOrderEnd에 추가
+		pnOrderEnd.add(pnBtn);			//주문 완료 버튼을 pnOrderEnd에 추가
 		
-		add(orderListPanel, BorderLayout.CENTER);		//상품명,수량,가격을 나타낼 패널을 프레임에 추가
-		add(orderEndPanel, BorderLayout.SOUTH);		//orderEndPanel을 BorderLayout의 남쪽에 추가
+		add(pnOrder, BorderLayout.CENTER);		//상품명,수량,가격을 나타낼 패널을 프레임에 추가
+		add(pnOrderEnd, BorderLayout.SOUTH);		//pnOrderEnd을 BorderLayout의 남쪽에 추가
+
+		this.setVisible(true);								
 	}
 
-	@Override
-	public void windowOpened(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-		menuFrame.setVisible(true);
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowActivated(WindowEvent e) {
-		
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-		
-	}
-	
-	class TableCell extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
+	//옵션 정보를 보여주기 위한 셀 렌더러
+	class TableCell extends AbstractCellEditor implements TableCellRenderer {
 	        JTextArea jb;
 	 
 	        public TableCell() {
@@ -249,20 +210,6 @@ public class OrderFrame extends JFrame implements WindowListener{
 	        	jb.setText(value.toString());
 	            return jb;
 	        }
-	 
-	        @Override
-	        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-	                int column) {
-	        	jb.setText(value.toString());
-	            return jb;
-	        }
 	    }
 
-	 public int getTotalSum() {
-		 return orderSum;
-	 }
-	 
-	 public void setTotalSum(int orderSum) {
-		 this.orderSum = orderSum;
-	 }
 }
